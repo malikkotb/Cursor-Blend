@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 export default function CursorBlend() {
   // Create a ref for the target div
   const textDivRef = useRef(null);
-  const hoverScale = 10; // Scale factor when hovering
+  const hoverScale = 12; // Scale factor when hovering
   const [isHovering, setIsHovering] = useState(false); // hover state
 
   const cursorSize = 30;
@@ -21,17 +21,8 @@ export default function CursorBlend() {
   };
 
   // Use useTransform to interpolate scale value based on hover state
-
-  // Convert isHovering to a motion value
   const isHoveringMotion = useMotionValue(isHovering ? 1 : 0);
   const cursorScale = useTransform(isHoveringMotion, [0, 1], [1, hoverScale]);
-
-  //   const isHoveringMotion = useSpring(useMotionValue(isHovering ? 1 : 0), {
-  //     stiffness: 100, // Lower stiffness for slower animation
-  //     damping: 40, // Higher damping for smoother animation
-  //     mass: 1, // Adjust mass for effect intensity
-  //   });
-  //   const cursorScale = useTransform(isHoveringMotion, [0, 1], [1, hoverScale]);
 
   const manageMouseMove = (e) => {
     const { clientX, clientY } = e;
@@ -64,30 +55,65 @@ export default function CursorBlend() {
     };
   }, [mouse]);
 
+  const text = "Hiding bad shit from people since 2021.";
+  const words = text.split(" ");
+
+  //   const text = "Hiding bad shit from people since 2021.";
+  const wordsAndSpaces = text.split(/(\s+)/);
+
   return (
     <div>
       <motion.div
         animate={{ scale: isHovering ? hoverScale : 1 }}
         // transition={{ duration: 0.2, ease: "easeInOut" }}
-        transition={{ type: "tween", ease: "backOut", duration:0.5}}
-
+        transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
         style={{
           left: smoothMouse.x,
           top: smoothMouse.y,
           width: cursorSize,
-          height: cursorSize, 
+          height: cursorSize,
         }}
-        className={`fixed z-50 bg-[#2C671A] rounded-full pointer-events-none`}
+        className={`fixed z-40 bg-[#c0243b] rounded-full pointer-events-none`}
       ></motion.div>
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen bg-black h-screen flex justify-center items-center">
         <div
           ref={textDivRef} // Assign the ref to this div
-          className="mx-20 text-6xl font-medium text-left border-2 border-red-400 p-4"
+          className="mx-28 text-6xl font-medium text-left leading-tight tracking-wider text-[#b5ab9a] p-4"
         >
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error rerum
-          mollitia rem repellendus dolorem deleniti molestiae similique delectus
-          voluptates numquam eaque asperiores exercitationem laboriosam.
+          I'm an independent creative web developer.
         </div>
+
+        <div
+          className="mx-28 absolute z-50 opacity-0 hover:opacity-100 font-medium text-left leading-tight tracking-wider p-4"
+          id="text-to-be-revealed"
+          style={{
+            // display: "inline-flex",
+            // flexWrap: "wrap",
+            alignItems: "baseline",
+          }}
+        >
+          {wordsAndSpaces.map((word, wordIndex) => (
+              <span key={wordIndex}>
+                {word.split("").map((char, charIndex) => (
+                  <span
+                    className="text-6xl leading-tight tracking-wider"
+                    key={charIndex}
+                  >
+                    {char}
+                  </span>
+                ))}
+                {"\u00A0"}
+              </span>
+          ))}
+        </div>
+
+        {/* 
+        <div
+          className="mx-28 text-6xl absolute z-50 opacity-0 hover:opacity-100 font-medium text-left leading-tight tracking-wider p-4"
+          id="text-to-be-revealed"
+        >
+          Hiding bad shit from people sind 2021.
+        </div> */}
       </div>
     </div>
   );
